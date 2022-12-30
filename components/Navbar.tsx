@@ -2,25 +2,57 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { AiOutlineLogout } from 'react-icons/ai';
 import { BiSearch } from 'react-icons/bi';
 import { IoMdAdd } from 'react-icons/io';
-import { GoogleLogin, googleLogout  } from '@react-oauth/google';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 import useAuthStore from '../store/authStore';
 import { IUser } from '../types';
 import { createOrGetUser } from '../utils';
 import Logo from '../utils/tiktik-logo.png';
+import {
+  useAccount,
+} from 'wagmi'
 
 const Navbar = () => {
   const [user, setUser] = useState<IUser | null>();
   const [searchValue, setSearchValue] = useState('');
+  const { address, isConnected } = useAccount()
   const router = useRouter();
   const { userProfile, addUser, removeUser } = useAuthStore();
   
   useEffect(() => {
     setUser(userProfile);
   }, [userProfile]);
+
+
+  useEffect(() => {
+    const signIn = async () => {
+      if(address && isConnected === true){
+
+        const images = [
+          'https://i.ibb.co/M2Hp9Hs/creator1.png',
+          'https://i.ibb.co/6wrRPYS/nft.webp',
+          'https://i.ibb.co/QJPvj3t/creator3.jpg',
+          'https://i.ibb.co/gjvR4gn/creator5.jpg',
+          'https://i.ibb.co/c6RZQrG/creator2.jpg',
+          'https://i.ibb.co/Mhp170L/creator6.jpg',
+        ]
+
+        const name = `${address.slice(0, 4)}...${address.slice(-4)}`
+  
+        const response = {
+           name : name,
+           picture : images[Math.floor(Math.random()*images.length)],
+           sub : address,
+        }
+        createOrGetUser(response, addUser)
+       }else {
+        removeUser()
+       }
+    }
+    signIn()
+  }, [address, isConnected ]);
 
   const handleSearch = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -84,22 +116,10 @@ const Navbar = () => {
                 </div>
               </Link>
             )}
-              <button
-                type='button'
-                className=' border-2 p-2 rounded-full cursor-pointer outline-none shadow-md'
-                onClick={() => {
-                  googleLogout();
-                  removeUser();
-                }}
-              >
-                <AiOutlineLogout color='red' fontSize={21} />
-              </button>
+              <ConnectButton />
           </div>
         ) : (
-            <GoogleLogin
-              onSuccess={(response) => createOrGetUser(response, addUser)}
-              onError={() => console.log('Login Failed')}
-            />
+            <ConnectButton />
         )}
       </div>
     </div>

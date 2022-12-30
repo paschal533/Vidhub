@@ -9,8 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "4.5.0",
+    "@rainbow-me/rainbowkit": "^0.8.1",
     "@react-oauth/google": "^0.2.6",
     "@sanity/client": "^3.3.0",
+    "@w3ui/react-keyring": "^2.0.1",
+    "@w3ui/react-uploader": "^3.0.1",
     "axios": "^0.27.2",
     "gapi-script": "^1.2.0",
     "next": "12.1.6",
@@ -19,17 +23,33 @@
     "react-google-login": "^5.2.2",
     "react-icons": "^4.3.1",
     "uuidv4": "^6.2.13",
+    "wagmi": "^0.10.1",
     "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.7",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "@nomiclabs/hardhat-ethers": "^2.2.1",
+    "@nomiclabs/hardhat-etherscan": "^3.1.4",
+    "@typechain/ethers-v5": "^10.2.0",
+    "@typechain/hardhat": "^6.1.5",
     "@types/node": "17.0.35",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.4",
     "autoprefixer": "^10.4.7",
+    "chai": "^4.3.7",
     "eslint": "8.16.0",
     "eslint-config-next": "12.1.6",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.12.5",
+    "hardhat-gas-reporter": "^1.0.9",
     "postcss": "^8.4.14",
+    "solidity-coverage": "^0.8.2",
     "tailwindcss": "^3.0.24",
+    "typechain": "^8.1.1",
     "typescript": "4.6.4"
   }
 }

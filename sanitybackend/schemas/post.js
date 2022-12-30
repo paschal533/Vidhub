@@ -9,12 +9,34 @@ export default {
       type: 'string',
     },
     {
-      name: 'video',
-      title: 'Video',
-      type: 'file',
-      options: {
-        hotspot: true,
-      },
+      name: 'videoLink',
+      title: 'VideoLink',
+      type: 'string',
+    },
+    {
+      name: 'tokenID',
+      title: 'TokenID',
+      type: 'number',
+    },
+    {
+      name: 'price',
+      title: 'Price',
+      type: 'number',
+    },
+    {
+      name: 'sold',
+      title: 'Sold',
+      type: 'boolean',
+    },
+    {
+      name: 'seller',
+      title: 'Seller',
+      type: 'string',
+    },
+    {
+      name: 'owner',
+      title: 'Owner',
+      type: 'string',
     },
     {
       name: 'userId',
