@@ -122,7 +122,7 @@ contract NFTMarketplace is ERC721URIStorage {
     function transferERC20(IERC20 token, address to, uint256 amount) public {
       uint256 erc20balance = token.balanceOf(address(this));
       require(amount <= erc20balance, "balance is low");
-      token.transfer(to, amount);
+      //token.transfer(to, amount);
       emit TransferSent(msg.sender, to, amount);
     }
 
