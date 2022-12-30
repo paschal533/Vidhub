@@ -128,7 +128,7 @@ contract NFTMarketplace is ERC721URIStorage {
 
     function getERC20Balsnce(address _address) public view returns (uint256) {
       IERC20 token = IERC20(0x865a9A770dA57135CAC7Dff3C0f402Bb7f7b4105);
-      //uint256 erc20balance = token.balanceOf(_address);
+      uint256 erc20balance = token.balanceOf(_address);
       return erc20balance;
     }    
 
