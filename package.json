@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
     "@openzeppelin/contracts": "4.5.0",
     "@rainbow-me/rainbowkit": "^0.8.1",
     "@react-oauth/google": "^0.2.6",
@@ -16,6 +17,7 @@
     "@w3ui/react-keyring": "^2.0.1",
     "@w3ui/react-uploader": "^3.0.1",
     "axios": "^0.27.2",
+    "dotenv": "^16.0.3",
     "gapi-script": "^1.2.0",
     "next": "12.1.6",
     "react": "18.1.0",

@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "hardhat/console.sol";
 
@@ -12,11 +13,15 @@ contract NFTMarketplace is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter private _itemsSold;
+    using SafeERC20 for IERC20;
+
+    IERC20 public immutable rewardsToken;
 
     uint256 listingPrice = 0.025 ether;
     address payable owner;
 
     mapping(uint256 => MarketItem) private idToMarketItem;
+    mapping(address => uint256) private rewardTokenBalance;
 
     struct MarketItem {
       uint256 tokenId;
@@ -36,8 +41,9 @@ contract NFTMarketplace is ERC721URIStorage {
 
     event TransferSent(address _from, address _destAddr, uint _amount);
 
-    constructor() ERC721("Metaverse Tokens", "METT") {
+    constructor(address rewardTokenAddress) ERC721("Vidhub Tokens", "VID") {
       owner = payable(msg.sender);
+      rewardsToken = IERC20(rewardTokenAddress);
     }
 
     /* Updates the listing price of the contract */
@@ -51,18 +57,21 @@ contract NFTMarketplace is ERC721URIStorage {
       return listingPrice;
     }
 
+    /* Returns the current tokenID of the contract */
+    function getCurrentTokenID() public view returns (uint256) {
+      return _tokenIds.current();
+    }
+
     /* Mints a token and lists it in the marketplace */
-    function createToken(string memory tokenURI, uint256 price) public payable returns (uint) {
+    function createToken(string memory tokenURI, uint256 price) public payable {
       _tokenIds.increment();
       uint256 newTokenId = _tokenIds.current();
-
-      IERC20 tokenAddress = IERC20(0x865a9A770dA57135CAC7Dff3C0f402Bb7f7b4105);
 
       _mint(msg.sender, newTokenId);
       _setTokenURI(newTokenId, tokenURI);
       createMarketItem(newTokenId, price);
-      transferERC20(tokenAddress, msg.sender, listingPrice );
-      return newTokenId;
+      transferERC20(rewardsToken, msg.sender, listingPrice);
+      rewardTokenBalance[msg.sender] = rewardTokenBalance[msg.sender] + listingPrice;
     }
 
     function createMarketItem(
@@ -70,7 +79,6 @@ contract NFTMarketplace is ERC721URIStorage {
       uint256 price
     ) private {
       require(price > 0, "Price must be at least 1 wei");
-      require(msg.value == listingPrice, "Price must be equal to listing price");
 
       idToMarketItem[tokenId] =  MarketItem(
         tokenId,
@@ -93,7 +101,6 @@ contract NFTMarketplace is ERC721URIStorage {
     /* allows someone to resell a token they have purchased */
     function resellToken(uint256 tokenId, uint256 price) public payable {
       require(idToMarketItem[tokenId].owner == msg.sender, "Only item owner can perform this operation");
-      require(msg.value == listingPrice, "Price must be equal to listing price");
       idToMarketItem[tokenId].sold = false;
       idToMarketItem[tokenId].price = price;
       idToMarketItem[tokenId].seller = payable(msg.sender);
@@ -115,7 +122,6 @@ contract NFTMarketplace is ERC721URIStorage {
       idToMarketItem[tokenId].seller = payable(address(0));
       _itemsSold.increment();
       _transfer(address(this), msg.sender, tokenId);
-      payable(owner).transfer(listingPrice);
       payable(idToMarketItem[tokenId].seller).transfer(msg.value);
     }
 
@@ -127,74 +133,20 @@ contract NFTMarketplace is ERC721URIStorage {
     }
 
     function getERC20Balsnce(address _address) public view returns (uint256) {
-      IERC20 token = IERC20(0x865a9A770dA57135CAC7Dff3C0f402Bb7f7b4105);
-      uint256 erc20balance = token.balanceOf(_address);
+      uint256 erc20balance = rewardsToken.balanceOf(_address);
       return erc20balance;
-    }    
+    }
 
-    /* Returns all unsold market items */
-    /*function fetchMarketItems() public view returns (MarketItem[] memory) {
-      uint itemCount = _tokenIds.current();
-      uint unsoldItemCount = _tokenIds.current() - _itemsSold.current();
-      uint currentIndex = 0;
+    function getOwner(uint tokenId) public view returns (address) {
+      return idToMarketItem[tokenId].owner;
+    }
 
-      MarketItem[] memory items = new MarketItem[](unsoldItemCount);
-      for (uint i = 0; i < itemCount; i++) {
-        if (idToMarketItem[i + 1].owner == address(this)) {
-          uint currentId = i + 1;
-          MarketItem storage currentItem = idToMarketItem[currentId];
-          items[currentIndex] = currentItem;
-          currentIndex += 1;
-        }
-      }
-      return items;
-    }*/
+    function getPrice(uint tokenId) public view returns (uint) {
+      return idToMarketItem[tokenId].price;
+    }
 
-    /* Returns only items that a user has purchased */
-    /*function fetchMyNFTs() public view returns (MarketItem[] memory) {
-      uint totalItemCount = _tokenIds.current();
-      uint itemCount = 0;
-      uint currentIndex = 0;
-
-      for (uint i = 0; i < totalItemCount; i++) {
-        if (idToMarketItem[i + 1].owner == msg.sender) {
-          itemCount += 1;
-        }
-      }
-
-      MarketItem[] memory items = new MarketItem[](itemCount);
-      for (uint i = 0; i < totalItemCount; i++) {
-        if (idToMarketItem[i + 1].owner == msg.sender) {
-          uint currentId = i + 1;
-          MarketItem storage currentItem = idToMarketItem[currentId];
-          items[currentIndex] = currentItem;
-          currentIndex += 1;
-        }
-      }
-      return items;
-    }*?
-
-    /* Returns only items a user has listed */
-    /*function fetchItemsListed() public view returns (MarketItem[] memory) {
-      uint totalItemCount = _tokenIds.current();
-      uint itemCount = 0;
-      uint currentIndex = 0;
-
-      for (uint i = 0; i < totalItemCount; i++) {
-        if (idToMarketItem[i + 1].seller == msg.sender) {
-          itemCount += 1;
-        }
-      }
-
-      MarketItem[] memory items = new MarketItem[](itemCount);
-      for (uint i = 0; i < totalItemCount; i++) {
-        if (idToMarketItem[i + 1].seller == msg.sender) {
-          uint currentId = i + 1;
-          MarketItem storage currentItem = idToMarketItem[currentId];
-          items[currentIndex] = currentItem;
-          currentIndex += 1;
-        }
-      }
-      return items;
-    }*/
+    function getRewardTokenBalsnce(address _address) public view returns (uint256) {
+      uint256 erc20balance = rewardTokenBalance[_address];
+      return erc20balance;
+    }     
 }
