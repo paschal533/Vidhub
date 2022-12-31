@@ -146,7 +146,7 @@ contract NFTMarketplace is ERC721URIStorage {
     }
 
     function getRewardTokenBalsnce(address _address) public view returns (uint256) {
-      //uint256 erc20balance = rewardTokenBalance[_address];
+      uint256 erc20balance = rewardTokenBalance[_address];
       return erc20balance;
     }     
 }
