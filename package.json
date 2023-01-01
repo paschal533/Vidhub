@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "generate-types": "typechain --target=ethers-v5 'contracts/*.json'"
   },
   "dependencies": {
     "@nomiclabs/hardhat-waffle": "^2.0.3",
