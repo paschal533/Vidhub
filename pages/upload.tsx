@@ -66,7 +66,7 @@ const Upload = () => {
 
 
   const handlePost = async () => {
-    //if (caption && asset[0].playbackId && topic) {
+    //if (caption && asset[0].playbackId && topic &&) {
       try {
 
       setSavingPost(true);
