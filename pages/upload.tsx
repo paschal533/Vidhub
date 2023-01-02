@@ -71,7 +71,7 @@ const Upload = () => {
 
       setSavingPost(true);
 
-      //const id = await getCurrentID();
+      const id = await getCurrentID();
 
       const url = "https";
 
