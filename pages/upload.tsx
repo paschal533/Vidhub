@@ -80,7 +80,7 @@ const Upload = () => {
 
       const cid = await uploader.uploadFile(blob)
 
-      console.log(cid)
+      //console.log(cid)
 
       const id = await getCurrentID();
 
