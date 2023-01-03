@@ -76,7 +76,7 @@ const Upload = () => {
 
       const data = JSON.stringify({ caption: "hello", topic: "hello", video:"https" });
 
-      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
+      //const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
 
       const cid = await uploader.uploadFile(blob)
 
