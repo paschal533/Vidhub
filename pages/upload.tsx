@@ -27,7 +27,7 @@ const Upload = () => {
   const [wrongFileType, setWrongFileType] = useState<Boolean>(false);
   const { isloadingNFT, createSale, getCurrentID } =
     useContext(NFTMarketplaceContext);
-  const [, uploader] = useUploader()
+  const [{ storedDAGShards }, uploader] = useUploader()
   const { address } = useAccount()
 
   const userProfile: any = useAuthStore((state) => state.userProfile);
@@ -66,17 +66,30 @@ const Upload = () => {
 
 
   const handlePost = async () => {
-    //if (caption && asset[0].playbackId && topic && price) {
+    //if (caption && asset[0]?.playbackId && topic && price) {
       try {
 
       setSavingPost(true);
 
+      /* first, upload to web3storage */
+      //const data = JSON.stringify({ caption, topic, video: asset[0]?.playbackId });
+
+      const data = JSON.stringify({ caption: "hello", topic: "hello", video:"https" });
+
+      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
+
+      const cid = await uploader.uploadFile(blob)
+
+      console.log(cid)
+
       const id = await getCurrentID();
+
+
 
       const url = "https";
 
       // @ts-ignore TODO: fix typescript error
-      await createSale(url, price);
+      //await createSale(url, price);
 
       /*const doc = {
         _type: 'post',
@@ -99,7 +112,7 @@ const Upload = () => {
         
       router.push('/');*/
     }catch(error){
-      alert(error)
+      console.log(error)
     }
     //}
   };
