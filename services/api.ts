@@ -11,7 +11,7 @@ export const fetchContract = (
   signerOrProvider: ethers.Signer | ethers.providers.Provider
 ) =>
   NFTMarketplace__factory.connect(
-    "0x7ec205F8573E16678fE130A132a0956eEc79E9B2",
+    NFTMarketplaceAddress,
     signerOrProvider
 );
 

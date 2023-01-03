@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { BiSearch } from 'react-icons/bi';
 import { IoMdAdd } from 'react-icons/io';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-
+import { ConnectKitButton } from "connectkit";
+import styled from "styled-components";
 import useAuthStore from '../store/authStore';
 import { IUser } from '../types';
 import { createOrGetUser } from '../utils';
@@ -13,6 +13,40 @@ import Logo from '../utils/tiktik-logo.png';
 import {
   useAccount,
 } from 'wagmi'
+
+
+const StyledButton = styled.button`
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  padding: 10px 20px;
+  color: #ffffff;
+  background: #F51997;
+  width: 180px;
+  font-size: 17px;
+  font-weight: 500;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px -6px #1a88f8;
+  @media (max-width: 600px) {
+    width: 180px;
+  }
+  transition: 200ms ease;
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 40px -6px #1a88f8;
+  }
+  &:active {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 32px -6px #1a88f8;
+  }
+  &:disabled,
+  button[disabled] {
+    border: 1px solid #999999;
+    color: #ffffff;
+    background: #83bffb !important;
+    cursor: no-drop;
+  }
+`;
 
 const Navbar = () => {
   const [user, setUser] = useState<IUser | null>();
@@ -24,7 +58,6 @@ const Navbar = () => {
   useEffect(() => {
     setUser(userProfile);
   }, [userProfile]);
-
 
   useEffect(() => {
     const signIn = async () => {
@@ -116,10 +149,18 @@ const Navbar = () => {
                 </div>
               </Link>
             )}
-              <ConnectButton />
+              <ConnectKitButton />
           </div>
         ) : (
-            <ConnectButton />
+          <ConnectKitButton.Custom>
+          {({ isConnected, show, truncatedAddress, ensName }) => {
+            return (
+              <StyledButton onClick={show}>
+                {isConnected ? ensName ?? truncatedAddress : "Connect wallet"}
+              </StyledButton>
+            );
+          }}
+        </ConnectKitButton.Custom>
         )}
       </div>
     </div>

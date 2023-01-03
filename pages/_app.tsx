@@ -4,7 +4,7 @@ import {
   getDefaultWallets,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
-import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { configureChains, createClient, WagmiConfig, Chain } from 'wagmi';
 import { polygonMumbai } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
@@ -20,10 +20,15 @@ import {
 
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { ConnectKitProvider, getDefaultClient } from "connectkit";
 import '../styles/globals.css';
+
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   const [isSSR, setIsSSR] = useState(true);
+
+  const alchemyId = "fromD-TUkq4_7WynDvni4nAeITTkZEIj";
+
 
   const { chains, provider } = configureChains(
     [polygonMumbai],
@@ -32,17 +37,15 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
       publicProvider()
     ]
   );
+
+  const client = createClient(
+    getDefaultClient({
+      appName: "FundBrave",
+      alchemyId,
+      chains,
+    })
+  );
   
-  const { connectors } = getDefaultWallets({
-    appName: 'Tiktok',
-    chains
-  });
-  
-  const wagmiClient = createClient({
-    autoConnect: true,
-    connectors,
-    provider
-  })
 
   useEffect(() => {
     setIsSSR(false);
@@ -52,13 +55,13 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
 
   const livepeerClient = createReactClient({
     provider: studioProvider({
-      apiKey: "ec843d95-4ee3-4946-81af-fd85bb7702a4",
+      apiKey: process.env.NEXT_PUBLIC_API_KEY,
     }),
   });
 
   return (
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider chains={chains}>
+    <WagmiConfig client={client}>
+      <ConnectKitProvider>
         <NFTMarketplaceProvider>
         <LivepeerConfig client={livepeerClient}>
          <KeyringProvider>
@@ -80,7 +83,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
           </KeyringProvider>
         </LivepeerConfig>
         </NFTMarketplaceProvider>
-      </RainbowKitProvider>
+      </ConnectKitProvider>
     </WagmiConfig>
   );
 };
