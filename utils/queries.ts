@@ -2,12 +2,11 @@ export const allPostsQuery = () => {
   const query = `*[_type == "post"] | order(_createdAt desc){
     _id,
      caption,
-       video{
-        asset->{
-          _id,
-          url
-        }
-      },
+      videoLink,
+      seller,
+      owner,
+      price,
+      sold,
       userId,
       postedBy->{
         _id,
@@ -32,13 +31,13 @@ export const allPostsQuery = () => {
 export const postDetailQuery = (postId: string | string[]) => {
   const query = `*[_type == "post" && _id == '${postId}']{
     _id,
-     caption,
-       video{
-        asset->{
-          _id,
-          url
-        }
-      },
+    caption,
+      videoLink,
+      seller,
+      owner,
+      price,
+      tokenID,
+      sold,
       userId,
     postedBy->{
       _id,

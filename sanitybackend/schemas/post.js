@@ -16,12 +16,12 @@ export default {
     {
       name: 'tokenID',
       title: 'TokenID',
-      type: 'number',
+      type: 'string',
     },
     {
       name: 'price',
       title: 'Price',
-      type: 'number',
+      type: 'string',
     },
     {
       name: 'sold',

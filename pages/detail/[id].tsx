@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { MdOutlineCancel } from 'react-icons/md';
 import { BsFillPlayFill } from 'react-icons/bs';
 import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
-
+import { Player, useAssetMetrics } from '@livepeer/react';
 import Comments from '../../components/Comments';
 import { BASE_URL } from '../../utils';
 import LikeButton from '../../components/LikeButton';
@@ -86,14 +86,9 @@ const Detail = ({ postDetails }: IProps) => {
               </p>
             </div>
             <div className='relative'>
-              <div className='lg:h-[100vh] h-[60vh]'>
-                <video
-                  ref={videoRef}
-                  onClick={onVideoClick}
-                  loop
-                  src={post?.video?.asset.url}
-                  className=' h-full cursor-pointer'
-                ></video>
+              <div className='lg:h-[100vh] cursor-pointer h-full  rounded-3xl lg:w-[600px] md:h-[400px] w-[200px]  p-4 flex flex-col gap-6 justify-center items-center'>
+               <Player title={post.caption} playbackId={post.videoLink} />
+                 
               </div>
 
               <div className='absolute top-[45%] left-[40%]  cursor-pointer'>

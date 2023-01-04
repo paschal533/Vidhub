@@ -6,7 +6,7 @@ import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 import { BsFillPlayFill, BsFillPauseFill } from 'react-icons/bs';
 import { GoVerified } from 'react-icons/go';
 import { BsPlay } from 'react-icons/bs';
-
+import { Player, useAssetMetrics } from '@livepeer/react';
 import { Video } from './../types';
 
 interface IProps {
@@ -14,7 +14,7 @@ interface IProps {
   isShowingOnHome?: boolean;
 }
 
-const VideoCard: NextPage<IProps> = ({ post: { caption, postedBy, video, _id, likes }, isShowingOnHome }) => {
+const VideoCard: NextPage<IProps> = ({ post: { caption, postedBy, videoLink, _id, likes }, isShowingOnHome }) => {
   const [playing, setPlaying] = useState(false);
   const [isHover, setIsHover] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
@@ -40,11 +40,9 @@ const VideoCard: NextPage<IProps> = ({ post: { caption, postedBy, video, _id, li
     return (
       <div>
         <Link href={`/detail/${_id}`}>
-          <video
-            loop
-            src={video.asset.url}
-            className='w-[250px] md:w-full rounded-xl cursor-pointer'
-          ></video>
+        <div className=' rounded-3xl w-[260px] h-[458px]  p-4 flex flex-col gap-6 justify-center items-center'>
+          <Player title={caption} playbackId={videoLink} />
+        </div>
         </Link>
             <div className='flex gap-2 -mt-8 items-center ml-4'>
               <p className='text-white text-lg font-medium flex gap-1 items-center'>
@@ -104,14 +102,9 @@ const VideoCard: NextPage<IProps> = ({ post: { caption, postedBy, video, _id, li
           onMouseLeave={() => setIsHover(false)}
           className='rounded-3xl'
         >
-          <Link href={`/detail/${_id}`}>
-            <video
-              loop
-              ref={videoRef}
-              src={video.asset.url}
-              className='lg:w-[600px] h-[300px] md:h-[400px] lg:h-[528px] w-[200px] rounded-2xl cursor-pointer bg-gray-100'
-            ></video>
-          </Link>
+            <div className=' rounded-3xl lg:w-[600px] h-[300px] md:h-[400px] lg:h-[528px] w-[200px]  p-4 flex flex-col gap-6 justify-center items-center'>
+              <Player title={caption} playbackId={videoLink} />
+            </div>
 
           {isHover && (
             <div className='absolute bottom-6 cursor-pointer left-8 md:left-14 lg:left-0 flex gap-10 lg:justify-between w-[100px] md:w-[50px] lg:w-[600px] p-3'>

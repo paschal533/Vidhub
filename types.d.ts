@@ -1,11 +1,10 @@
 export interface Video {
   caption: string;
-  video: {
-    asset: {
-      _id: string;
-      url: string;
-    };
-  };
+  videoLink: string;
+  price: string;
+  owner: string;
+  seller: string;
+  tokenID: string;
   _id: string;
   postedBy: {
     _id: string;

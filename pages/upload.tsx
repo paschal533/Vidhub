@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useContext, useMemo } from 'react';
+import React, { useEffect, useState, useContext, useMemo, useRef } from 'react';
 import { SanityAssetDocument } from '@sanity/client';
 import { useRouter } from 'next/router';
 import { FaCloudUploadAlt } from 'react-icons/fa';
+import { create as ipfsHttpClient } from "ipfs-http-client";
 import { MdDelete } from 'react-icons/md';
 import axios from 'axios';
 import { NFTMarketplaceContext } from "../context/NFTMarketplaceContext";
 import { useUploader } from '@w3ui/react-uploader'
 import { Player, useAssetMetrics, useCreateAsset } from '@livepeer/react';
-
 import useAuthStore from '../store/authStore';
 import { BASE_URL } from '../utils';
 import { client } from '../utils/client';
@@ -15,6 +15,21 @@ import { topics } from '../utils/constants';
 import {
   useAccount,
 } from 'wagmi'
+
+const projectId = process.env.NEXT_PUBLIC_INFURA_IPFS_PROJECT_ID;
+const projectSecret = process.env.NEXT_PUBLIC_INFURA_IPFS_PROJECT_SECRET;
+const projectIdAndSecret = `${projectId}:${projectSecret}`;
+
+const ipfsClient = ipfsHttpClient({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  headers: {
+    authorization: `Basic ${Buffer.from(projectIdAndSecret).toString(
+      "base64"
+    )}`,
+  },
+});
 
 const Upload = () => {
   const [caption, setCaption] = useState('');
@@ -66,39 +81,33 @@ const Upload = () => {
 
 
   const handlePost = async () => {
-    //if (caption && asset[0]?.playbackId && topic && price) {
+    if (caption && asset[0]?.playbackId && topic && price) {
       try {
 
       setSavingPost(true);
 
-      /* first, upload to web3storage */
-      //const data = JSON.stringify({ caption, topic, video: asset[0]?.playbackId });
+      // @ts-ignore TODO: fix typescript error
+      const data = JSON.stringify({ caption, topic, video: asset[0]?.playbackId });
 
-      const data = JSON.stringify({ caption: "hello", topic: "hello", video:"https" });
+      const added = await ipfsClient.add(data);
 
-      const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
-
-      const cid = await uploader.uploadFile(blob)
-
-      console.log(cid)
-
+      const url = `https://vidhub.infura-ipfs.io/ipfs/${added.path}`;
       const id = await getCurrentID();
 
+      console.log(url)
 
-
-      const url = "https";
 
       // @ts-ignore TODO: fix typescript error
-      //await createSale(url, price);
+      await createSale(url, price);
 
-      /*const doc = {
+      const doc = {
         _type: 'post',
         caption,
         videoLink: asset[0].playbackId,
         tokenID: id,
         price: price,
-        seller: "me",
-        onwer: address,
+        seller: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        owner: address,
         sold: false,
         userId: userProfile?._id,
         postedBy: {
@@ -110,11 +119,11 @@ const Upload = () => {
 
       await axios.post(`${BASE_URL}/api/post`, doc);
         
-      router.push('/');*/
+      router.push('/');
     }catch(error){
       console.log(error)
     }
-    //}
+  }
   };
 
   const progressFormatted = useMemo(
@@ -188,7 +197,7 @@ const Upload = () => {
                     </p>
                   </div>)
                 ) : (
-                  <div className=' rounded-3xl w-[310px] h-[90vh]  p-4 flex flex-col gap-6 justify-center items-center'>
+                  <div className=' rounded-3xl w-[260px] h-[458px]  p-4 flex flex-col gap-6 justify-center items-center'>
                    <Player title={asset[0].name} playbackId={asset[0].playbackId} />
                   </div>
                 )}
@@ -213,6 +222,7 @@ const Upload = () => {
           <label className='text-md font-medium '>Price</label>
           <input
             type='text'
+            placeholder='Amount in Matic'
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             className='rounded lg:after:w-650 outline-none text-md border-2 border-gray-200 p-2'
