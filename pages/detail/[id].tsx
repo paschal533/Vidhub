@@ -68,7 +68,7 @@ const Detail = ({ postDetails }: IProps) => {
           comment,
         });
 
-        setPost({ ...post, comments: res.data.comments });
+        //setPost({ ...post, comments: res.data.comments });
         setComment('');
         setIsPostingComment(false);
       }
