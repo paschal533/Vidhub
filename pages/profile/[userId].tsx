@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Image from 'next/image';
 import { GoVerified } from 'react-icons/go';
 import axios from 'axios';
-
+import { NFTMarketplaceContext } from "../../context/NFTMarketplaceContext";
 import VideoCard from '../../components/VideoCard';
 import NoResults from '../../components/NoResults';
 import { IUser, Video } from '../../types';
 import { BASE_URL } from '../../utils';
+import {
+  useAccount,
+} from 'wagmi';
+import { ethers } from "ethers";
 
 interface IProps {
   data: {
@@ -18,9 +22,11 @@ interface IProps {
 
 const Profile = ({ data }: IProps) => {
   const [showUserVideos, setShowUserVideos] = useState<Boolean>(true);
+  const [tokenBalance, setTokenBalance] = useState<string>('0')
   const [videosList, setVideosList] = useState<Video[]>([]);
-
+  const { getUserEarning } = useContext(NFTMarketplaceContext);
   const { user, userVideos, userLikedVideos } = data;
+  const { address, isConnected } = useAccount()
   const videos = showUserVideos ? 'border-b-2 border-black' : 'text-gray-400';
   const liked = !showUserVideos ? 'border-b-2 border-black' : 'text-gray-400';
 
@@ -35,6 +41,16 @@ const Profile = ({ data }: IProps) => {
 
     fetchVideos();
   }, [showUserVideos, userLikedVideos, userVideos]);
+
+  useEffect(() => {
+    const getTokenBalance = async () => {
+      const res = await getUserEarning(address);
+      const balance = ethers.utils.formatEther(res);
+      setTokenBalance(balance.toString())
+    }
+
+    getTokenBalance()
+  }, [address, isConnected])
 
   return (
     <div className='w-full'>
@@ -56,6 +72,8 @@ const Profile = ({ data }: IProps) => {
             <GoVerified className='text-blue-400 md:text-xl text-md' />
           </div>
           <p className='text-sm font-medium'> {user.userName}</p>
+
+          <p className='text-lg mt-6 font-medium'> Earning: {tokenBalance} VID</p>
         </div>
       </div>
       <div>

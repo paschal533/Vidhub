@@ -41,6 +41,20 @@ export const useNFTMarketplace = () => {
 
   };
 
+  const getUserEarning = async (addrs : any) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const contract = API.fetchContract(signer);
+
+    const tokenBalance = await contract.getRewardTokenBalsnce(addrs);
+
+    return tokenBalance.toString();
+
+  };
+
   const buyNft = async (nft : any) => {
     try{
     const web3Modal = new Web3Modal();
@@ -67,5 +81,5 @@ export const useNFTMarketplace = () => {
     }
   };
 
-  return { isloadingNFT, createSale, buyNft, getCurrentID }
+  return { isloadingNFT, createSale, buyNft, getCurrentID, getUserEarning }
 }
