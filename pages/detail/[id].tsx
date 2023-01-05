@@ -1,11 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useContext} from 'react';
 import { useRouter } from 'next/router';
 import { GoVerified } from 'react-icons/go';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MdOutlineCancel } from 'react-icons/md';
-import { BsFillPlayFill } from 'react-icons/bs';
-import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
 import { Player, useAssetMetrics } from '@livepeer/react';
 import Comments from '../../components/Comments';
 import { BASE_URL } from '../../utils';
@@ -13,38 +11,48 @@ import LikeButton from '../../components/LikeButton';
 import useAuthStore from '../../store/authStore';
 import { Video } from '../../types';
 import axios from 'axios';
+import styled from "styled-components";
+import { NFTMarketplaceContext } from "../../context/NFTMarketplaceContext";
 
 interface IProps {
   postDetails: Video;
 }
 
+const StyledButton = styled.button`
+cursor: pointer;
+position: relative;
+display: inline-block;
+padding: 4px 10px;
+color: #ffffff;
+background: #F51997;
+border-radius: 1rem;
+box-shadow: 0 4px 24px -6px #1a88f8;
+`;
+
 const Detail = ({ postDetails }: IProps) => {
   const [post, setPost] = useState(postDetails);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isVideoMuted, setIsVideoMuted] = useState<boolean>(false);
   const [isPostingComment, setIsPostingComment] = useState<boolean>(false);
+  const [isBuying, setIsBuying] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
+  const { buyNft } = useContext(NFTMarketplaceContext);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
 
   const { userProfile }: any = useAuthStore();
 
-  const onVideoClick = () => {
-    if (isPlaying) {
-      videoRef?.current?.pause();
-      setIsPlaying(false);
-    } else {
-      videoRef?.current?.play();
-      setIsPlaying(true);
-    }
-  };
-
   useEffect(() => {
     if (post && videoRef?.current) {
       videoRef.current.muted = isVideoMuted;
     }
   }, [post, isVideoMuted]);
+
+  const buyNFT = async () => {
+    setIsBuying(true);
+    await buyNft(postDetails)
+    setIsBuying(false);
+  }
 
   const handleLike = async (like: boolean) => {
     if (userProfile) {
@@ -90,26 +98,8 @@ const Detail = ({ postDetails }: IProps) => {
                <Player title={post.caption} playbackId={post.videoLink} />
                  
               </div>
-
-              <div className='absolute top-[45%] left-[40%]  cursor-pointer'>
-                {!isPlaying && (
-                  <button onClick={onVideoClick}>
-                    <BsFillPlayFill className='text-white text-6xl lg:text-8xl' />
-                  </button>
-                )}
-              </div>
             </div>
-            <div className='absolute bottom-5 lg:bottom-10 right-5 lg:right-10  cursor-pointer'>
-              {isVideoMuted ? (
-                <button onClick={() => setIsVideoMuted(false)}>
-                  <HiVolumeOff className='text-white text-3xl lg:text-4xl' />
-                </button>
-              ) : (
-                <button onClick={() => setIsVideoMuted(true)}>
-                  <HiVolumeUp className='text-white text-3xl lg:text-4xl' />
-                </button>
-              )}
-            </div>
+             
           </div>
           <div className='relative w-[1000px] md:w-[900px] lg:w-[700px]'>
             <div className='lg:mt-20 mt-10'>
@@ -134,13 +124,17 @@ const Detail = ({ postDetails }: IProps) => {
               <div className='px-10'>
                 <p className=' text-md text-gray-600'>{post.caption}</p>
               </div>
-              <div className='mt-10 px-10'>
+              <div className='mt-10 flex items-center space-x-3 px-10'>
                 {userProfile && <LikeButton
                   likes={post.likes}
                   flex='flex'
                   handleLike={() => handleLike(true)}
                   handleDislike={() => handleLike(false)}
                 />}
+
+                {userProfile && <StyledButton onClick={buyNFT} className='text-md '>
+                  {isBuying ? 'Buying...' : `Purchase for ${postDetails.price} matic`}
+                </StyledButton>}
               </div>
               <Comments
                 comment={comment}

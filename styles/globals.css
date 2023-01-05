@@ -18,3 +18,23 @@
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
+
+
+.btn{
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  padding: 4px 10px;
+  color: #ffffff;
+  background: #F51997;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px -6px #1a88f8;
+   
+}
+
+@media (max-width: 600px) {
+  .btn {
+    width: 180px;
+  }
+}
+ 

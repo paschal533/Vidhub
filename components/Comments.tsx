@@ -2,6 +2,8 @@ import React, { Dispatch, SetStateAction } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { GoVerified } from 'react-icons/go';
+import styled from "styled-components";
+
 
 import useAuthStore from '../store/authStore';
 import NoResults from './NoResults';
@@ -14,6 +16,25 @@ interface IProps {
   addComment: (e: React.FormEvent) => void;
   comments: IComment[];
 }
+
+const StyledButton = styled.button`
+cursor: pointer;
+position: relative;
+display: inline-block;
+padding: 4px 10px;
+color: #ffffff;
+background: #F51997;
+border-radius: 1rem;
+box-shadow: 0 4px 24px -6px #1a88f8;
+
+&:disabled,
+  button[disabled] {
+    border: 1px solid #999999;
+    color: #ffffff;
+    background: #ec76b9 !important;
+    cursor: no-drop;
+  }
+`;
 
 interface IComment {
   comment: string;
@@ -72,13 +93,13 @@ const Comments = ({ comment, setComment, addComment, comments, isPostingComment 
         <form onSubmit={addComment} className='flex gap-4'>
           <input
             value={comment}
-            onChange={(e) => setComment(e.target.value.trim())}
+            onChange={(e) => setComment(e.target.value)}
             className='bg-primary px-6 py-4 text-md font-medium border-2 w-[250px] md:w-[700px] lg:w-[350px] border-gray-100 focus:outline-none focus:border-2 focus:border-gray-300 flex-1 rounded-lg'
             placeholder='Add comment..'
           />
-          <button className='text-md text-gray-400 ' onClick={addComment}>
+          <StyledButton className='text-md ' disabled={!comment} onClick={addComment}>
             {isPostingComment ? 'Commenting...' : 'Comment'}
-          </button>
+          </StyledButton>
         </form>
       </div>}
     </div>
