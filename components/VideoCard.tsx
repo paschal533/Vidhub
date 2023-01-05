@@ -2,12 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { HiVolumeUp, HiVolumeOff } from 'react-icons/hi';
-import { BsFillPlayFill, BsFillPauseFill } from 'react-icons/bs';
+import { AiOutlineComment } from 'react-icons/ai';
+import { FiShare2 } from 'react-icons/fi';
 import { GoVerified } from 'react-icons/go';
 import { BsPlay } from 'react-icons/bs';
 import { Player, useAssetMetrics } from '@livepeer/react';
 import { Video } from './../types';
+import LikeButton from '../components/LikeButton';
+import useAuthStore from '../store/authStore';
+import axios from 'axios';
+import { BASE_URL } from '../utils';
+import Share from './Share';
+import { useDisclosure } from "@chakra-ui/react";
 
 interface IProps {
   post: Video;
@@ -16,17 +22,25 @@ interface IProps {
 
 const VideoCard: NextPage<IProps> = ({ post: { caption, postedBy, videoLink, _id, likes }, isShowingOnHome }) => {
   const [playing, setPlaying] = useState(false);
+  const [like, setLike] = useState<any>(likes);
   const [isHover, setIsHover] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const onVideoPress = () => {
-    if (playing) {
-      videoRef?.current?.pause();
-      setPlaying(false);
-    } else {
-      videoRef?.current?.play();
-      setPlaying(true);
+  const { userProfile }: any = useAuthStore();
+
+
+  useEffect(() => {}, [userProfile])
+
+  const handleLike = async (like: boolean) => {
+    if (userProfile) {
+      const res = await axios.put(`${BASE_URL}/api/like`, {
+        userId: userProfile._id,
+        postId: _id,
+        like
+      });
+      setLike( res.data.likes );
     }
   };
 
@@ -106,28 +120,24 @@ const VideoCard: NextPage<IProps> = ({ post: { caption, postedBy, videoLink, _id
               <Player title={caption} playbackId={videoLink} />
             </div>
 
-          {isHover && (
-            <div className='absolute bottom-6 cursor-pointer left-8 md:left-14 lg:left-0 flex gap-10 lg:justify-between w-[100px] md:w-[50px] lg:w-[600px] p-3'>
-              {playing ? (
-                <button onClick={onVideoPress}>
-                  <BsFillPauseFill className='text-black text-2xl lg:text-4xl' />
-                </button>
-              ) : (
-                <button onClick={onVideoPress}>
-                  <BsFillPlayFill className='text-black text-2xl lg:text-4xl' />
-                </button>
-              )}
-              {isVideoMuted ? (
-                <button onClick={() => setIsVideoMuted(false)}>
-                  <HiVolumeOff className='text-black text-2xl lg:text-4xl' />
-                </button>
-              ) : (
-                <button onClick={() => setIsVideoMuted(true)}>
-                  <HiVolumeUp className='text-black text-2xl lg:text-4xl' />
-                </button>
-              )}
+            <div className='w-full flex justify-between items-center'>
+
+            <div className='flex space-x-3 items-center'>
+               {userProfile && <LikeButton
+                  likes={like}
+                  flex='flex'
+                  handleLike={() => handleLike(true)}
+                  handleDislike={() => handleLike(false)}
+                />}
+              
+              <Link href={`/detail/${_id}`}>
+              <div className='font-[50px] cursor-pointer text-3xl'><AiOutlineComment /></div>
+              </Link>
             </div>
-          )}
+
+                <div onClick={onOpen} className='font-[50px] cursor-pointer text-3xl'><FiShare2 /></div>
+            </div>
+            <Share isOpen={isOpen} name={caption} image={videoLink} onClose={onClose} url={`http://localhost:3000/detail/${_id}`}/>
         </div>
       </div>
     </div>

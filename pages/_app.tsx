@@ -9,6 +9,7 @@ import { polygonMumbai } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { NFTMarketplaceProvider } from '../context/NFTMarketplaceContext';
+import { ChakraProvider } from '@chakra-ui/react'
 import '@rainbow-me/rainbowkit/styles.css';
 import { KeyringProvider, useKeyring } from '@w3ui/react-keyring'
 import { UploaderProvider } from '@w3ui/react-uploader'
@@ -67,6 +68,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
          <KeyringProvider>
           <UploaderProvider>
             <AgentLoader>
+            <ChakraProvider>
           <div className='xl:w-[1200px] m-auto overflow-hidden h-[100vh]'>
             <Navbar />
             <div className='flex gap-6 md:gap-20 '>
@@ -78,6 +80,7 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
               </div>
             </div>
           </div>
+          </ChakraProvider>
           </AgentLoader>
           </UploaderProvider>
           </KeyringProvider>
