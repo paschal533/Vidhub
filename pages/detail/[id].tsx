@@ -13,6 +13,9 @@ import { Video } from '../../types';
 import axios from 'axios';
 import styled from "styled-components";
 import { NFTMarketplaceContext } from "../../context/NFTMarketplaceContext";
+import {
+  useAccount,
+} from 'wagmi'
 
 interface IProps {
   postDetails: Video;
@@ -36,6 +39,7 @@ const Detail = ({ postDetails }: IProps) => {
   const [isBuying, setIsBuying] = useState<boolean>(false);
   const [comment, setComment] = useState<string>('');
   const { buyNft } = useContext(NFTMarketplaceContext);
+  const { address } = useAccount()
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const router = useRouter();
@@ -50,9 +54,21 @@ const Detail = ({ postDetails }: IProps) => {
 
   const buyNFT = async () => {
     setIsBuying(true);
-    await buyNft(postDetails)
+    await buyNft(postDetails);
+    await updatePost();
     setIsBuying(false);
   }
+
+  const updatePost = async () => {
+    if (userProfile) {
+        const res = await axios.put(`${BASE_URL}/api/update/${post._id}`, {
+          userId: userProfile._id,
+          owner : address,
+        });
+
+        setPost({ ...post, owner: res.data.owner, userId: res.data.userId, postedBy: res.data.postedBy });
+      }
+  };
 
   const handleLike = async (like: boolean) => {
     if (userProfile) {

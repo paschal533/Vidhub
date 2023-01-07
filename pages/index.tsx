@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import axios from 'axios';
 import Head from 'next/head'
 import VideoCard from '../components/VideoCard';
@@ -10,7 +10,9 @@ interface IProps {
   videos: Video[];
 }
 
+
 const Home = ({ videos }: any) => {
+
   return (
     <div className='flex flex-col gap-10 videos h-full'>
       <Head>

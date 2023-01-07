@@ -94,8 +94,6 @@ const Upload = () => {
       const url = `https://vidhub.infura-ipfs.io/ipfs/${added.path}`;
       const id = await getCurrentID();
 
-      console.log(url)
-
 
       // @ts-ignore TODO: fix typescript error
       await createSale(url, price);

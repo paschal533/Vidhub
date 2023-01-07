@@ -51,41 +51,21 @@ const StyledButton = styled.button`
 const Navbar = () => {
   const [user, setUser] = useState<IUser | null>();
   const [searchValue, setSearchValue] = useState('');
+  const [show, setShow] = useState<boolean>(false)
   const { address, isConnected } = useAccount()
   const router = useRouter();
-  const { userProfile, addUser, removeUser } = useAuthStore();
+  const { userProfile } = useAuthStore();
   
   useEffect(() => {
     setUser(userProfile);
   }, [userProfile]);
 
   useEffect(() => {
-    const signIn = async () => {
-      if(address && isConnected === true){
+    if(address && isConnected && userProfile){
 
-        const images = [
-          'https://i.ibb.co/M2Hp9Hs/creator1.png',
-          'https://i.ibb.co/6wrRPYS/nft.webp',
-          'https://i.ibb.co/QJPvj3t/creator3.jpg',
-          'https://i.ibb.co/gjvR4gn/creator5.jpg',
-          'https://i.ibb.co/c6RZQrG/creator2.jpg',
-          'https://i.ibb.co/Mhp170L/creator6.jpg',
-        ]
-
-        const name = `${address.slice(0, 4)}...${address.slice(-4)}`
-  
-        const response = {
-           name : name,
-           picture : images[Math.floor(Math.random()*images.length)],
-           sub : address,
-        }
-        createOrGetUser(response, addUser)
-       }else {
-        removeUser()
-       }
+      setShow(true)
     }
-    signIn()
-  }, [address, isConnected ]);
+  }, [address, isConnected, userProfile])
 
   const handleSearch = (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -128,7 +108,7 @@ const Navbar = () => {
         </form>
       </div>
       <div>
-        {user ? (
+        {show ? (
           <div className='flex gap-5 md:gap-10'>
             <Link href='/upload'>
               <button className='border-2 px-2 md:px-4 text-md font-semibold flex items-center gap-2'>
@@ -136,7 +116,7 @@ const Navbar = () => {
                 <span className='hidden md:block'>Upload </span>
               </button>
             </Link>
-            {user.image && (
+            {user?.image && (
               <Link href={`/profile/${user._id}`}>
                 <div>
                   <Image

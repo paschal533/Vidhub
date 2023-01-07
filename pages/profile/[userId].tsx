@@ -21,6 +21,7 @@ interface IProps {
 }
 
 const Profile = ({ data }: IProps) => {
+  console.log(data)
   const [showUserVideos, setShowUserVideos] = useState<Boolean>(true);
   const [tokenBalance, setTokenBalance] = useState<string>('0')
   const [videosList, setVideosList] = useState<Video[]>([]);
