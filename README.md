@@ -14,6 +14,7 @@ Vidhub is a decentralized social media, video-sharing app that allows users to c
 - Hardhat (Smart Contract Development Framework)
 - Livepeer (Video storage && player)
 - Web3.storage - IPFS (NFT File Storage)
+- Polygon Mumbai (Blockchain network)
 
 # ⛓ Blockchain Protocol used
 
