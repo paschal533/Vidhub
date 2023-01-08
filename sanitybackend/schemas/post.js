@@ -55,7 +55,7 @@ export default {
       of: [
         {
           type: 'reference',
-          to: [{ type: 'user' }],
+          to: [{type: 'user'}],
         },
       ],
     },
@@ -63,7 +63,7 @@ export default {
       name: 'comments',
       title: 'Comments',
       type: 'array',
-      of: [{ type: 'comment' }],
+      of: [{type: 'comment'}],
     },
     {
       name: 'topic',
@@ -71,4 +71,4 @@ export default {
       type: 'string',
     },
   ],
-};
+}

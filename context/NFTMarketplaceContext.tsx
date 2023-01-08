@@ -3,7 +3,9 @@ import { useNFTMarketplace } from "../hooks/useNFTMarketplace";
 
 type Context = ReturnType<typeof useNFTMarketplace>;
 
-export const NFTMarketplaceContext = React.createContext<Context>({} as Context);
+export const NFTMarketplaceContext = React.createContext<Context>(
+  {} as Context
+);
 
 interface Props {
   children: React.ReactNode;

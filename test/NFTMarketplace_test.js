@@ -10,15 +10,17 @@ describe("NFTMarketplace test", () => {
 
   beforeEach(async () => {
     const NFTMarketPlace = await ethers.getContractFactory("NFTMarketplace");
-    const Token = await ethers.getContractFactory('Token')
+    const Token = await ethers.getContractFactory("Token");
 
-    token1 = await Token.deploy('Vidhub', 'VID', '1000000')
+    token1 = await Token.deploy("Vidhub", "VID", "1000000");
     nFTMarketPlace = await NFTMarketPlace.deploy(token1.address);
     accounts = await ethers.getSigners();
     deployer = accounts[0];
     receiver = accounts[1];
 
-    let transaction = await token1.connect(deployer).transfer(nFTMarketPlace.address, tokens(100));
+    let transaction = await token1
+      .connect(deployer)
+      .transfer(nFTMarketPlace.address, tokens(100));
     await transaction.wait();
   });
 
@@ -29,7 +31,7 @@ describe("NFTMarketplace test", () => {
   });
 
   it("creates market token", async () => {
-     await nFTMarketPlace.createToken("https:nftkastle.com", "20");
+    await nFTMarketPlace.createToken("https:nftkastle.com", "20");
 
     const currentTokenID = await nFTMarketPlace.getCurrentTokenID();
     expect("1").to.equal(currentTokenID.toString());
