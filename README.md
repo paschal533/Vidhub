@@ -1,6 +1,6 @@
 # Vidhub
 
-Vidhub is a decentralized social media, video-sharing app that allows users to create, watch, like, comment and share 40-second videos shot on mobile devices or webcams. The video posted will be minted as NFT and can be bought by another user. Users are also rewarded with 0.025 of our VID token each time they post a video.
+Vidhub is a decentralized social media, video-sharing app that allows users to create, watch, like, comment, buy and share videos shot on mobile devices or webcams. The video will be minted as NFT and posted, and can be bought by another user. Users are also rewarded with 0.025 of our VID token each time they post a video.
 
 # 🛠 Technology Stack & Tools
 
