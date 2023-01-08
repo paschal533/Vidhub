@@ -15,14 +15,8 @@ const Home = ({ videos }: any) => {
     <div className="flex flex-col gap-10 videos h-full">
       <Head>
         <title>Vidhub</title>
-        <meta name="description" content="A blockchain game" />
+        <meta name="description" content="A web3 social media" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-        <link
-          href="https://vjs.zencdn.net/7.20.3/video-js.css"
-          rel="stylesheet"
-        />
-        <script src="https://vjs.zencdn.net/7.20.3/video.min.js"></script>
       </Head>
       {videos.length ? (
         videos?.map((video: any) => (

@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Login from "../components/Login";
+import Head from "next/head";
 
 const LoginPage = () => {
   const route = useRouter();
@@ -17,6 +18,9 @@ const LoginPage = () => {
 
   return (
     <div className="flex w-full absolute left-0 top-0 bg-white flex-wrap lg:flex-nowrap">
+      <Head>
+        <title>Vidhub || Login</title>
+      </Head>
       <Login />
     </div>
   );
