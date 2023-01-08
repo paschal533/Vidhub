@@ -98,6 +98,12 @@ npx hardhat run --network mumbai scripts/deploy.js
 0x7ec205F8573E16678fE130A132a0956eEc79E9B2
 ```
 
+# 📄 VID token Smart-contract address
+
+```
+0x3dDac85FA891cA51BF339f1df791AA002ec08A8A
+```
+
 # 📜 Mumbai Testnet Explorer
 
 ```

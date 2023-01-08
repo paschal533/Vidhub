@@ -152,7 +152,7 @@ const VideoCard: NextPage<IProps> = ({
             name={caption}
             image={videoLink}
             onClose={onClose}
-            url={`http://localhost:3000/detail/${_id}`}
+            url={`https://vidhub.vercel.app//${_id}`}
           />
         </div>
       </div>
